@@ -1,0 +1,35 @@
+"""
+{{.Description}}
+"""
+
+from ethereum_test_tools import (
+	Account,
+	Environment,
+	StateTest,
+	TestAddress,
+	Transaction,
+	Yul,
+	test_from,
+)
+
+@test_from("{{.EarliestFork}}")
+def {{.TestName}}(fork):
+    """
+    {{.Description}}
+    """
+
+    env = Environment()
+    
+    pre = {
+{{.PreState}}
+    }
+
+    tx = {{.Transaction}}
+
+    post = {
+{{.PostState}}
+    }
+
+
+    yield StateTest(env=env, pre=pre, post=post, txs=[tx])
+    
