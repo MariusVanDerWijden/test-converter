@@ -105,10 +105,24 @@ func fillTransactions(tx Transaction) (string, error) {
 	}
 	buf := bytes.NewBuffer(nil)
 
+	// if we have no txdata, we need to add some empty data
+	if len(tx.Data) == 0 {
+		tx.Data = append(tx.Data, &Data{
+			Data:       "",
+			AccessList: []AccessList{},
+		})
+	}
 	// One transaction field can have multiple transaction descriptions
 	for i := 0; i < len(tx.Data); i++ {
 		values := make(map[string]string)
-		values["data"] = tx.Data[i]
+		values["data"] = handleCode(tx.Data[i].Data)
+		if len(tx.Data[i].AccessList) > 0 {
+			al, err := fillAccesslist(tx.Data[i].AccessList)
+			if err != nil {
+				return "", err
+			}
+			values["access_list"] = al
+		}
 		values["nonce"] = tx.Nonce
 		values["gasLimit"] = tx.GasLimit[i]
 		values["gasPrice"] = tx.GasPrice
@@ -128,6 +142,33 @@ func fillTransactions(tx Transaction) (string, error) {
 	return buf.String(), nil
 }
 
+func fillAccesslist(als []AccessList) (string, error) {
+	testTemplate, err := os.ReadFile("templates/accesslist.txt")
+	if err != nil {
+		return "", err
+	}
+
+	tmpl, err := template.New("AccessList").Parse(string(testTemplate))
+	if err != nil {
+		return "", err
+	}
+	buf := bytes.NewBuffer(nil)
+
+	for _, al := range als {
+		f := struct {
+			Address     string
+			StorageKeys []string
+		}{
+			Address:     al.Address,
+			StorageKeys: al.StorageKeys,
+		}
+		if err := tmpl.Execute(buf, f); err != nil {
+			return "", err
+		}
+	}
+	return buf.String(), nil
+}
+
 func fillStorage(account Account) (string, error) {
 	return "", nil
 }
@@ -137,8 +178,12 @@ func stringify(str string) string {
 }
 
 func handleCode(code string) string {
-	// Code can be hex string
-	if _, err := hex.DecodeString(code); err == nil {
+	// Code can be empty
+	if len(code) < 2 {
+		return stringify(code)
+	}
+	// Code can be hex string, drop 0x
+	if _, err := hex.DecodeString(code[2:]); err == nil {
 		return stringify(code)
 	}
 	// Code can be LLL

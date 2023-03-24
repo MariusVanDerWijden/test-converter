@@ -1,0 +1,7 @@
+AccessList(
+            address="{{.Address}}",
+            storage_keys=[
+                {{range $v := .StorageKeys}}"{{$v}}", 
+                {{end}}
+            ],
+        )

@@ -36,8 +36,18 @@ type Account struct {
 	ShouldNotExist int
 }
 
+type AccessList struct {
+	Address     string   `yaml:"address"`
+	StorageKeys []string `yaml:"storageKeys"`
+}
+
+type Data struct {
+	Data       string       `yaml:"data"`
+	AccessList []AccessList `yaml:"accessList"`
+}
+
 type Transaction struct {
-	Data      []string `yaml:"data"`
+	Data      []*Data  `yaml:"data"` // Data can be both '' which is a string and Data
 	GasLimit  []string `yaml:"gasLimit"`
 	GasPrice  string   `yaml:"gasPrice"`
 	Nonce     string   `yaml:"nonce"`

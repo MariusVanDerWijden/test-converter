@@ -7,3 +7,9 @@ func TestConvertFile(t *testing.T) {
 		panic(err)
 	}
 }
+
+func TestConvertFile2(t *testing.T) {
+	if err := convertFile("testdata/baseFeeExampleFiller.yml", "testdata/baseFeeExample.py"); err != nil {
+		panic(err)
+	}
+}

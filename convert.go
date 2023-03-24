@@ -13,7 +13,10 @@ func convertFile(inputFile string, outputFile string) error {
 		return err
 	}
 
-	converted, err := convertYaml(input)
+	// preprocess to clean the input
+	in := Preprocess(string(input))
+
+	converted, err := convertYaml([]byte(in))
 	if err != nil {
 		return err
 	}
