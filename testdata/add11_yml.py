@@ -21,59 +21,53 @@ def add11_yml(fork):
     env = Environment()
     
     pre = {
-        "2adc25665018aa1fe0e6bc666dac8fc2697ff9ba" : Account(
-            code: ""
-            nonce: 1
-            storage: 
-        )
         "095e7baea6a6c7c4c2dfeb977efac326af552d87" : Account(
-            code: """lll({
+            code="""lll({
    ; Can also add lll style comments here
    [[0]] (ADD 1 1) 
 }
-)"""
-            nonce: 0
-            storage: 
+)""",
+            nonce=0,
+            balance=1000000000000000000,
+        )
+        "2adc25665018aa1fe0e6bc666dac8fc2697ff9ba" : Account(
+            code="",
+            nonce=1,
+            balance=0,
         )
         "a94f5374fce5edbc8e2a8697c15331677e6ebf0b" : Account(
-            code: "0x"
-            nonce: 0
-            storage: 
+            code="0x",
+            nonce=0,
+            balance=1000000000000000000,
         )
 
     }
 
     tx = Transaction(
-        data: ""
-        gasLimit: 400000
-        gasPrice: 10
-        nonce: 0
-        secretKey: "45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8"
-        to: "095e7baea6a6c7c4c2dfeb977efac326af552d87"
-        value: 100000
+        code="",
+        nonce=0,
+        gas_limit=400000,
+        gas_price=10,
+        to="095e7baea6a6c7c4c2dfeb977efac326af552d87",
+        value=100000,
+        secret_key="45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8",
     )
 
 
     post = {
-        "e94f5374fce5edbc8e2a8697c15331677e6ebf0b" : Account(
-            code: ""
-            nonce: 
-            storage: 
-        )
         "095e7baea6a6c7c4c2dfeb977efac326af552d87" : Account(
-            code: "0x600160010160005500"
-            nonce: 
-            storage: 
+            code="0x600160010160005500",
         )
         "2adc25665018aa1fe0e6bc666dac8fc2697ff9ba" : Account(
-            code: ""
-            nonce: 1
-            storage: 
+            code="",
+            nonce=1,
         )
         "a94f5374fce5edbc8e2a8697c15331677e6ebf0b" : Account(
-            code: "0x"
-            nonce: 1
-            storage: 
+            code="0x",
+            nonce=1,
+        )
+        "e94f5374fce5edbc8e2a8697c15331677e6ebf0b" : Account(
+            code="",
         )
 
     }

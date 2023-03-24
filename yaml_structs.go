@@ -33,6 +33,7 @@ type Account struct {
 	Code           string
 	Storage        map[string]string
 	Nonce          string
+	Balance        string
 	ShouldNotExist int
 }
 

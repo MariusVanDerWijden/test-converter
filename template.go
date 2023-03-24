@@ -5,8 +5,14 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"sort"
 	"text/template"
 )
+
+type kv struct {
+	Key   string
+	Value string
+}
 
 func fillTest(t Test, testname string) ([]byte, error) {
 	testTemplate, err := os.ReadFile("templates/test.txt")
@@ -66,20 +72,28 @@ func fillAccounts(accounts map[string]Account) (string, error) {
 	}
 	buf := bytes.NewBuffer(nil)
 
-	for name, account := range accounts {
+	// Make accounts order deterministic
+	names := make([]string, 0)
+	for name := range accounts {
+		names = append(names, name)
+	}
+	sort.Strings(names)
 
+	for _, name := range names {
+		account := accounts[name]
 		storage, err := fillStorage(account)
 		if err != nil {
 			return "", err
 		}
-		values := make(map[string]string)
-		values["code"] = handleCode(account.Code)
-		values["nonce"] = account.Nonce
-		values["storage"] = storage
+		values := make([]kv, 0)
+		setArr(&values, "code", handleCode(account.Code))
+		setArr(&values, "nonce", account.Nonce)
+		setArr(&values, "balance", account.Balance)
+		setArr(&values, "storage", storage)
 
 		f := struct {
 			Name   string
-			Values map[string]string
+			Values []kv
 		}{
 			Name:   name,
 			Values: values,
@@ -114,24 +128,24 @@ func fillTransactions(tx Transaction) (string, error) {
 	}
 	// One transaction field can have multiple transaction descriptions
 	for i := 0; i < len(tx.Data); i++ {
-		values := make(map[string]string)
-		values["data"] = handleCode(tx.Data[i].Data)
+		values := make([]kv, 0)
+		setArr(&values, "code", handleCode(tx.Data[i].Data))
 		if len(tx.Data[i].AccessList) > 0 {
 			al, err := fillAccesslist(tx.Data[i].AccessList)
 			if err != nil {
 				return "", err
 			}
-			values["access_list"] = al
+			setArr(&values, "access_list", al)
 		}
-		values["nonce"] = tx.Nonce
-		values["gasLimit"] = tx.GasLimit[i]
-		values["gasPrice"] = tx.GasPrice
-		values["to"] = stringify(tx.To)
-		values["value"] = tx.Value[i]
-		values["secretKey"] = stringify(tx.SecretKey)
+		setArr(&values, "nonce", tx.Nonce)
+		setArr(&values, "gas_limit", tx.GasLimit[i])
+		setArr(&values, "gas_price", tx.GasPrice)
+		setArr(&values, "to", stringify(tx.To))
+		setArr(&values, "value", tx.Value[i])
+		setArr(&values, "secret_key", stringify(tx.SecretKey))
 
 		f := struct {
-			Values map[string]string
+			Values []kv
 		}{
 			Values: values,
 		}
@@ -188,4 +202,19 @@ func handleCode(code string) string {
 	}
 	// Code can be LLL
 	return fmt.Sprintf("\"\"\"lll(%v)\"\"\"", code)
+}
+
+func set(mapping map[string]string, key, value string) {
+	if value != "" {
+		mapping[key] = value
+	}
+}
+
+func setArr(array *[]kv, key, value string) {
+	if value != "" {
+		*array = append(*array, kv{
+			Key:   key,
+			Value: value,
+		})
+	}
 }
