@@ -22,11 +22,11 @@ def basefeeExample(fork):
     
     pre = {
         "095e7baea6a6c7c4c2dfeb977efac326af552d87" : Account(
-            code="""lll({
+            code=lll("""{
    ; Can also add lll style comments here
    [[0]] (ADD 1 1) 
 }
-)""",
+"""),
             nonce=0,
             balance=1000000000000000000,
         )
@@ -39,7 +39,7 @@ def basefeeExample(fork):
     }
 
     tx = Transaction(
-        code="""lll(:label declaredKeyWrite :raw 0x00)""",
+        code=lll(""":label declaredKeyWrite :raw 0x00"""),
         access_list=AccessList(
             address="0x095e7baea6a6c7c4c2dfeb977efac326af552d87",
             storage_keys=[
@@ -49,6 +49,8 @@ def basefeeExample(fork):
             ],
         ),
         nonce=0,
+        max_fee_per_gas=0x12A05F200,
+        max_priority_fee_per_gas=2,
         gas_limit=4000000,
         to="095e7baea6a6c7c4c2dfeb977efac326af552d87",
         value=100000,
@@ -59,6 +61,9 @@ def basefeeExample(fork):
     post = {
         "095e7baea6a6c7c4c2dfeb977efac326af552d87" : Account(
             code="",
+            storage={
+                0x00: 2,
+            },
         )
 
     }

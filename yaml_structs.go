@@ -7,6 +7,7 @@ type Environment struct {
 	Number       string `yaml:"currentNumber"`
 	Timestamp    string `yaml:"currentTimestamp"`
 	PreviousHash string `yaml:"previousHash"`
+	Basefee      string `yaml:"currentBaseFee"`
 }
 
 type Index struct {
@@ -48,13 +49,15 @@ type Data struct {
 }
 
 type Transaction struct {
-	Data      []*Data  `yaml:"data"` // Data can be both '' which is a string and Data
-	GasLimit  []string `yaml:"gasLimit"`
-	GasPrice  string   `yaml:"gasPrice"`
-	Nonce     string   `yaml:"nonce"`
-	To        string   `yaml:"to"`
-	Value     []string `yaml:"value"`
-	SecretKey string   `yaml:"secretKey"`
+	Data                 []*Data  `yaml:"data"` // Data can be both '' which is a string and Data
+	GasLimit             []string `yaml:"gasLimit"`
+	GasPrice             string   `yaml:"gasPrice"`
+	Nonce                string   `yaml:"nonce"`
+	To                   string   `yaml:"to"`
+	Value                []string `yaml:"value"`
+	SecretKey            string   `yaml:"secretKey"`
+	MaxFeePerGas         string   `yaml:"maxFeePerGas"`
+	MaxPriorityFeePerGas string   `yaml:"maxPriorityFeePerGas"`
 }
 
 type Overall struct {

@@ -138,6 +138,8 @@ func fillTransactions(tx Transaction) (string, error) {
 			setArr(&values, "access_list", al)
 		}
 		setArr(&values, "nonce", tx.Nonce)
+		setArr(&values, "max_fee_per_gas", tx.MaxFeePerGas)
+		setArr(&values, "max_priority_fee_per_gas", tx.MaxPriorityFeePerGas)
 		setArr(&values, "gas_limit", tx.GasLimit[i])
 		setArr(&values, "gas_price", tx.GasPrice)
 		setArr(&values, "to", stringify(tx.To))
@@ -236,12 +238,6 @@ func handleCode(code string) string {
 	}
 	// Code can be LLL
 	return fmt.Sprintf("lll(\"\"\"%v\"\"\")", code)
-}
-
-func set(mapping map[string]string, key, value string) {
-	if value != "" {
-		mapping[key] = value
-	}
 }
 
 func setArr(array *[]kv, key, value string) {
