@@ -81,7 +81,7 @@ func fillAccounts(accounts map[string]Account) (string, error) {
 
 	for _, name := range names {
 		account := accounts[name]
-		storage, err := fillStorage(account)
+		storage, err := fillStorage(account.Storage)
 		if err != nil {
 			return "", err
 		}
@@ -183,8 +183,42 @@ func fillAccesslist(als []AccessList) (string, error) {
 	return buf.String(), nil
 }
 
-func fillStorage(account Account) (string, error) {
-	return "", nil
+func fillStorage(storage map[string]string) (string, error) {
+	if len(storage) == 0 {
+		return "", nil
+	}
+	testTemplate, err := os.ReadFile("templates/storage.txt")
+	if err != nil {
+		return "", err
+	}
+
+	tmpl, err := template.New("Storage").Parse(string(testTemplate))
+	if err != nil {
+		return "", err
+	}
+	buf := bytes.NewBuffer(nil)
+
+	// Make storage order deterministic
+	keys := make([]string, 0)
+	for key := range storage {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+
+	values := make([]kv, 0)
+	for _, key := range keys {
+		value := storage[key]
+		setArr(&values, key, value)
+	}
+	f := struct {
+		Values []kv
+	}{
+		Values: values,
+	}
+	if err := tmpl.Execute(buf, f); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
 
 func stringify(str string) string {

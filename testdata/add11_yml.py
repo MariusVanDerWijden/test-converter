@@ -57,6 +57,9 @@ def add11_yml(fork):
     post = {
         "095e7baea6a6c7c4c2dfeb977efac326af552d87" : Account(
             code="0x600160010160005500",
+            storage={
+                0x00: 2,
+            },
         )
         "2adc25665018aa1fe0e6bc666dac8fc2697ff9ba" : Account(
             code="",

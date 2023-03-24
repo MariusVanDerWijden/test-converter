@@ -1,0 +1,3 @@
+{
+    {{range $i, $v := .Values}}            {{$v.Key}}: {{$v.Value}},
+    {{end}}        }
