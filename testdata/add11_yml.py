@@ -22,11 +22,11 @@ def add11_yml(fork):
     
     pre = {
         "095e7baea6a6c7c4c2dfeb977efac326af552d87" : Account(
-            code="""lll({
+            code=lll("""{
    ; Can also add lll style comments here
    [[0]] (ADD 1 1) 
 }
-)""",
+"""),
             nonce=0,
             balance=1000000000000000000,
         )

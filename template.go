@@ -235,7 +235,7 @@ func handleCode(code string) string {
 		return stringify(code)
 	}
 	// Code can be LLL
-	return fmt.Sprintf("\"\"\"lll(%v)\"\"\"", code)
+	return fmt.Sprintf("lll(\"\"\"%v\"\"\")", code)
 }
 
 func set(mapping map[string]string, key, value string) {
