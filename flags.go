@@ -11,6 +11,12 @@ var (
 		Required: true,
 	}
 
+	recursive = &cli.BoolFlag{
+		Name:     "rec",
+		Usage:    "Specify if all subdirectories should be converted as well",
+		Required: false,
+	}
+
 	output = &cli.StringFlag{
 		Name:     "out",
 		Usage:    "Specify the output directory",

@@ -39,7 +39,7 @@ type Account struct {
 	Storage        map[string]string
 	Nonce          string
 	Balance        string
-	ShouldNotExist int
+	ShouldNotExist string
 }
 
 type AccessList struct {
