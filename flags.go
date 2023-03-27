@@ -11,7 +11,7 @@ var (
 		Required: true,
 	}
 
-	ouptut = &cli.StringFlag{
+	output = &cli.StringFlag{
 		Name:     "out",
 		Usage:    "Specify the output directory",
 		Required: true,

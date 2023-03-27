@@ -121,17 +121,19 @@ func fillTransactions(tx Transaction) (string, error) {
 
 	// if we have no txdata, we need to add some empty data
 	if len(tx.Data) == 0 {
-		tx.Data = append(tx.Data, &Data{
-			Data:       "",
-			AccessList: []AccessList{},
+		tx.Data = append(tx.Data, DataWrapper{
+			d: Data{
+				Data:       "",
+				AccessList: []AccessList{},
+			},
 		})
 	}
 	// One transaction field can have multiple transaction descriptions
 	for i := 0; i < len(tx.Data); i++ {
 		values := make([]kv, 0)
-		setArr(&values, "code", handleCode(tx.Data[i].Data))
-		if len(tx.Data[i].AccessList) > 0 {
-			al, err := fillAccesslist(tx.Data[i].AccessList)
+		setArr(&values, "code", handleCode(tx.Data[i].d.Data))
+		if len(tx.Data[i].d.AccessList) > 0 {
+			al, err := fillAccesslist(tx.Data[i].d.AccessList)
 			if err != nil {
 				return "", err
 			}
@@ -140,10 +142,10 @@ func fillTransactions(tx Transaction) (string, error) {
 		setArr(&values, "nonce", tx.Nonce)
 		setArr(&values, "max_fee_per_gas", tx.MaxFeePerGas)
 		setArr(&values, "max_priority_fee_per_gas", tx.MaxPriorityFeePerGas)
-		setArr(&values, "gas_limit", tx.GasLimit[i])
+		setValueIfExists(&values, "gas_limit", tx.GasLimit, i)
 		setArr(&values, "gas_price", tx.GasPrice)
 		setArr(&values, "to", stringify(tx.To))
-		setArr(&values, "value", tx.Value[i])
+		setValueIfExists(&values, "value", tx.Value, i)
 		setArr(&values, "secret_key", stringify(tx.SecretKey))
 
 		f := struct {
@@ -247,4 +249,17 @@ func setArr(array *[]kv, key, value string) {
 			Value: value,
 		})
 	}
+}
+
+func setValueIfExists(array *[]kv, key string, value []string, index int) {
+	// No value exists, return
+	if len(value) == 0 {
+		return
+	}
+	// index is less than the max length, set
+	if index < len(value) {
+		setArr(array, key, value[index])
+	}
+	// index is not available, set [0] value
+	setArr(array, key, value[0])
 }
